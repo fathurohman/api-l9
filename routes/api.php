@@ -23,5 +23,6 @@ Route::post('login', [AuthController::class, 'login']);
 
 Route::middleware(['auth:api'])->group(function () {
     Route::get('user', [AuthController::class, 'user']);
+    Route::get('refreshtoken', [AuthController::class, 'getTokenAndRefreshToken']);
     Route::get('logout', [AuthController::class, 'logout']);
 });

@@ -2,8 +2,11 @@
 
 namespace App\Http\Controllers\Api;
 
+use Illuminate\Support\Facades\Http;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
+use Laravel\Passport\Client as OClient;
+use GuzzleHttp\Client;
 use Illuminate\Http\Request;
 use App\Models\User;
 
@@ -56,10 +59,30 @@ class AuthController extends Controller
         }
     }
 
+    public function getTokenAndRefreshToken(OClient $oClient, $email, $password)
+    {
+        $oClient = OClient::where('password_client', 1)->first();
+        $http = new Client;
+        $response = $http->request('POST', 'http://localhost/api-l9/oauth/token', [
+            'form_params' => [
+                'grant_type' => 'password',
+                'client_id' => $oClient->id,
+                'client_secret' => $oClient->secret,
+                'username' => $email,
+                'password' => $password,
+                'scope' => '*',
+            ],
+        ]);
+
+        return response()->json(['message' => 'token refresh', 'data' => $response], 200);
+    }
+
     public function logout(Request $request)
     {
         $request->user()->token()->revoke();
 
         return response()->json(['message' => 'Account Logout'], 200);
     }
+
+
 }
