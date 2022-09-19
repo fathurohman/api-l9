@@ -41,7 +41,24 @@ class CategoryController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $this->validate($request, [
+            'category_name' => 'required',
+        
+        ]);
+ 
+        $category = new Category();
+        $category->category_name = $request->category_name;
+ 
+        if ($category->save())
+            return response()->json([
+                'success' => true,
+                'data' => $category->toArray()
+            ]);
+        else
+            return response()->json([
+                'success' => false,
+                'message' => 'category not added'
+            ], 500);
     }
 
     /**
@@ -52,7 +69,19 @@ class CategoryController extends Controller
      */
     public function show($id)
     {
-        //
+        $category = Category::find($id);
+ 
+        if (!$category) {
+            return response()->json([
+                'success' => false,
+                'message' => 'category not found '
+            ], 400);
+        }
+ 
+        return response()->json([
+            'success' => true,
+            'data' => $category->toArray()
+        ], 200);
     }
 
     /**
@@ -75,7 +104,27 @@ class CategoryController extends Controller
      */
     public function update(Request $request, $id)
     {
-        //
+        $category = Category::find($id);
+ 
+        if (!$category) {
+            return response()->json([
+                'success' => false,
+                'message' => 'category not found'
+            ], 400);
+        }
+ 
+        $updated = $category->fill($request->all())->save();
+ 
+        if ($updated)
+            return response()->json([
+                'success' => true,
+                'data' => $category
+            ]);
+        else
+            return response()->json([
+                'success' => false,
+                'message' => 'category can not be updated'
+            ], 500);
     }
 
     /**
@@ -86,6 +135,28 @@ class CategoryController extends Controller
      */
     public function destroy($id)
     {
-        //
+        $category = Category::find($id);
+ 
+        if (!$category) {
+            return response()->json([
+                'success' => false,
+                'message' => 'category not found'
+            ], 400);
+        }
+ 
+        if ($category->delete()) {
+            return response()->json([
+                'success' => true,
+                'data' => $category
+            ]);
+        } else {
+            return response()->json([
+                'success' => false,
+                'message' => 'category can not be deleted'
+            ], 500);
+        }
     }
+
+
+
 }

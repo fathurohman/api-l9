@@ -30,7 +30,7 @@ class PostController extends Controller
         return response()->json([
             'success' => true,
             'data' => $post->toArray()
-        ], 400);
+        ], 200);
     }
  
     public function store(Request $request)
