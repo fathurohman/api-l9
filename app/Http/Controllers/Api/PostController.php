@@ -2,13 +2,15 @@
 namespace App\Http\Controllers\Api;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use App\Models\Post;
+
 
 class PostController extends Controller
 {
     public function index()
     {
-        $posts = auth()->user()->posts;
+        $posts = Auth::user()->posts;
  
         return response()->json([
             'success' => true,
@@ -36,15 +38,18 @@ class PostController extends Controller
     public function store(Request $request)
     {
         $this->validate($request, [
+            'category_id' => 'required',
             'title' => 'required',
             'description' => 'required'
         ]);
  
         $post = new Post();
+        $post->user_id = Auth::user()->id;
+        $post->category_id = $request->category_id;      
         $post->title = $request->title;
         $post->description = $request->description;
  
-        if (auth()->user()->posts()->save($post))
+        if ($post->save())
             return response()->json([
                 'success' => true,
                 'data' => $post->toArray()
