@@ -18,6 +18,7 @@ Route::middleware(['auth:api'])->group(function () {
     Route::get('refreshtoken', [AuthController::class, 'getTokenAndRefreshToken']);
     Route::get('logout', [AuthController::class, 'logout']);
 
+
     Route::resource('posts', PostController::class);
     Route::resource('category', CategoryController::class);
 });

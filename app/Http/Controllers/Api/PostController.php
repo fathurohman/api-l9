@@ -4,13 +4,15 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use App\Models\Post;
+use App\Models\Category;
 
 
 class PostController extends Controller
 {
     public function index()
     {
-        $posts = Auth::user()->posts;
+        // $posts = Auth::user()->posts;
+        $posts = Category::with('posts')->get();
  
         return response()->json([
             'success' => true,
